@@ -1,0 +1,22 @@
+* {
+  box-sizing: border-box;
+}
+
+.App {
+  display: flex;
+  padding: 30px;
+}
+
+.Game {
+  display: flex;
+  flex-wrap: wrap;
+  width: 560px;
+  height: 560px;
+  background-color: black;
+}
+
+.Game img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+}
