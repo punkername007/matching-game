@@ -3,13 +3,30 @@ import { useState, useEffect } from "react";
 // 0 define constants
 const width = 8;
 const circleColors = ["brown", "wheat", "navy", "lightgreen", "yellow", "pink"];
-
 function App() {
   // 2. Create a State for the board content
   const [currentBoard, setCurrentBoard] = useState([]);
+  const [circleDragged, setCircleDragged] = useState(null);
+  const [circleReplaced, setCircleReplaced] = useState(null);
+
+  const dragStart = (e) => {
+    setCircleDragged(e.target);
+  };
+
+  const dragDrop = (e) => {
+    setCircleReplaced(e.target);
+  };
+
+  const dragEnd = (e) => {
+    const circleReplacedId = parseInt(circleReplaced.getAttribute("data-id"));
+    const circleDraggeddId = parseInt(circleDragged.getAttribute("data-id"));
+
+    currentBoard[circleReplacedId] = circleDragged.style.backgroundColor;
+    currentBoard[circleDraggeddId] = circleReplaced.style.backgroundColor;
+  };
 
   function MoveElementBelow() {
-    for (let i = 0; i < currentBoard.length - width; i++) {
+    for (let i = 0; i <= currentBoard.length - width; i++) {
       const firstRow = [0, 1, 2, 3, 4, 5, 6, 7];
       const isFirstRow = firstRow.includes(i);
 
@@ -58,7 +75,7 @@ function App() {
   }
   // 10. Check when there's a combination fo four
   function checkColumnOfFour() {
-    for (let i = 0; i < 39; i++) {
+    for (let i = 0; i <= 39; i++) {
       const columnOfFour = [i, i + width, i + width * 2, i + width * 3];
       const columnColor = currentBoard[i];
 
@@ -72,7 +89,7 @@ function App() {
 
   // 6. Check when there's a combination of three
   function checkColumnOfThree() {
-    for (let i = 0; i < 47; i++) {
+    for (let i = 0; i <= 47; i++) {
       const columnOfThree = [i, i + width, i + width * 2];
       const columnColor = currentBoard[i];
 
@@ -132,7 +149,19 @@ function App() {
       <div className="Game">
         {/* 5. Loop through each element in the board content anc create an element on screen */}
         {currentBoard.map((color, index) => (
-          <img key={index} style={{ backgroundColor: color }} alt={color} />
+          <img
+            key={index}
+            style={{ backgroundColor: color }}
+            alt={color}
+            data-id={index}
+            draggable={true}
+            onDragStart={dragStart}
+            onDragOver={(ev) => ev.preventDefault()}
+            onDragEnter={(ev) => ev.preventDefault()}
+            onDragLeave={(ev) => ev.preventDefault()}
+            onDrop={dragDrop}
+            onDragEnd={dragEnd}
+          />
         ))}
       </div>
     </div>
