@@ -19,10 +19,36 @@ function App() {
 
   const dragEnd = (e) => {
     const circleReplacedId = parseInt(circleReplaced.getAttribute("data-id"));
-    const circleDraggeddId = parseInt(circleDragged.getAttribute("data-id"));
+    const circleDraggedId = parseInt(circleDragged.getAttribute("data-id"));
 
     currentBoard[circleReplacedId] = circleDragged.style.backgroundColor;
-    currentBoard[circleDraggeddId] = circleReplaced.style.backgroundColor;
+    currentBoard[circleDraggedId] = circleReplaced.style.backgroundColor;
+
+    const validMoves = [
+      circleDraggedId - 1,
+      circleDraggedId - width,
+      circleDraggedId + 1,
+      circleDraggedId + width,
+    ];
+
+    const validMove = validMoves.includes(circleReplacedId);
+    const isColumnOfFour = checkColumnOfFour();
+    const isColumnOfThree = checkColumnOfThree();
+    const isRowOfFour = checkRowOfFour();
+    const isRowOfThree = checkRowOfThree();
+
+    if (
+      circleReplacedId &&
+      validMove &&
+      (isColumnOfFour || isRowOfFour || isColumnOfThree || isRowOfThree)
+    ) {
+      setCircleDragged(null);
+      setCircleReplaced(null);
+    } else {
+      currentBoard[circleReplacedId] = circleReplaced.style.backgroundColor;
+      currentBoard[circleDraggedId] = circleDragged.style.backgroundColor;
+      setCurrentBoard([...currentBoard]);
+    }
   };
 
   function MoveElementBelow() {
@@ -55,6 +81,7 @@ function App() {
 
       if (rowOfFour.every((circle) => currentBoard[circle] === rowColor)) {
         rowOfFour.forEach((circle) => (currentBoard[circle] = ""));
+        return true;
       }
     }
   }
@@ -70,6 +97,7 @@ function App() {
 
       if (rowOfThree.every((circle) => currentBoard[circle] === rowColor)) {
         rowOfThree.forEach((circle) => (currentBoard[circle] = ""));
+        return true;
       }
     }
   }
@@ -83,6 +111,7 @@ function App() {
         columnOfFour.every((circle) => currentBoard[circle] === columnColor)
       ) {
         columnOfFour.forEach((circle) => (currentBoard[circle] = ""));
+        return true;
       }
     }
   }
@@ -97,6 +126,7 @@ function App() {
         columnOfThree.every((circle) => currentBoard[circle] === columnColor)
       ) {
         columnOfThree.forEach((circle) => (currentBoard[circle] = ""));
+        return true;
       }
     }
   }
