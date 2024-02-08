@@ -5,8 +5,25 @@ const width = 8;
 const circleColors = ["brown", "wheat", "navy", "lightgreen", "yellow", "pink"];
 
 function App() {
-  // 3. Create a State for the board content
+  // 2. Create a State for the board content
   const [currentBoard, setCurrentBoard] = useState([]);
+
+  function MoveElementBelow() {
+    for (let i = 0; i < currentBoard.length - width; i++) {
+      const firstRow = [0, 1, 2, 3, 4, 5, 6, 7];
+      const isFirstRow = firstRow.includes(i);
+
+      if (isFirstRow && currentBoard[i] === "") {
+        let randomIndex = Math.floor(Math.random() * circleColors.length);
+        currentBoard[i] = circleColors[randomIndex];
+      }
+
+      if (currentBoard[i + width] === "") {
+        currentBoard[i + width] = currentBoard[i];
+        currentBoard[i] = "";
+      }
+    }
+  }
 
   function checkRowOfFour() {
     for (let i = 0; i < currentBoard.length; i++) {
@@ -20,7 +37,7 @@ function App() {
       if (notValid.includes(i)) continue;
 
       if (rowOfFour.every((circle) => currentBoard[circle] === rowColor)) {
-        rowOfFour.forEach((circle) => (currentBoard[circle] = "green"));
+        rowOfFour.forEach((circle) => (currentBoard[circle] = ""));
       }
     }
   }
@@ -35,11 +52,10 @@ function App() {
       if (notValid.includes(i)) continue;
 
       if (rowOfThree.every((circle) => currentBoard[circle] === rowColor)) {
-        rowOfThree.forEach((circle) => (currentBoard[circle] = "white"));
+        rowOfThree.forEach((circle) => (currentBoard[circle] = ""));
       }
     }
   }
-
   // 10. Check when there's a combination fo four
   function checkColumnOfFour() {
     for (let i = 0; i < 39; i++) {
@@ -49,7 +65,7 @@ function App() {
       if (
         columnOfFour.every((circle) => currentBoard[circle] === columnColor)
       ) {
-        columnOfFour.forEach((circle) => (currentBoard[circle] = "green"));
+        columnOfFour.forEach((circle) => (currentBoard[circle] = ""));
       }
     }
   }
@@ -63,7 +79,7 @@ function App() {
       if (
         columnOfThree.every((circle) => currentBoard[circle] === columnColor)
       ) {
-        columnOfThree.forEach((circle) => (currentBoard[circle] = "white"));
+        columnOfThree.forEach((circle) => (currentBoard[circle] = ""));
       }
     }
   }
@@ -78,11 +94,11 @@ function App() {
         circleColors[Math.floor(Math.random() * circleColors.length)];
       circlesArrangement.push(randomColor);
     }
-    // 4. Set the board content distribution
+    // 3. Set the board content distribution
     setCurrentBoard(circlesArrangement);
   }
 
-  // 2. Create the game board only once.
+  // 4. Create the game board only once.
   useEffect(() => {
     createBoard();
   }, []);
@@ -91,10 +107,11 @@ function App() {
   // check the three combination every second
   useEffect(() => {
     const timer = setInterval(() => {
-      checkRowOfFour();
       checkColumnOfFour();
+      checkRowOfFour();
       checkColumnOfThree();
       checkRowOfThree();
+      MoveElementBelow();
       // 8. update the board every second filling the spaces
       setCurrentBoard([...currentBoard]);
     }, 100);
@@ -102,10 +119,11 @@ function App() {
     // 9. Clear the interval
     return () => clearInterval(timer);
   }, [
-    checkRowOfFour,
     checkColumnOfFour,
-    checkRowOfThree,
+    checkRowOfFour,
     checkColumnOfThree,
+    checkRowOfThree,
+    MoveElementBelow,
     currentBoard,
   ]);
 
@@ -113,11 +131,9 @@ function App() {
     <div className="App">
       <div className="Game">
         {/* 5. Loop through each element in the board content anc create an element on screen */}
-        {currentBoard.map(function (color, index) {
-          return (
-            <img key={index} style={{ backgroundColor: color }} alt={color} />
-          );
-        })}
+        {currentBoard.map((color, index) => (
+          <img key={index} style={{ backgroundColor: color }} alt={color} />
+        ))}
       </div>
     </div>
   );
