@@ -3,20 +3,31 @@
 }
 
 .App {
+  align-content: center;
   display: flex;
-  padding: 30px;
+  justify-content: center;
+  padding: 5% 2%;
 }
 
-.Game {
+.Board {
+  align-items: center;
+  background-color: burlywood;
+  border: 5px solid black;
   display: flex;
   flex-wrap: wrap;
-  width: 560px;
-  height: 560px;
-  background-color: black;
+  justify-content: center;
+  margin: 0 auto;
+  overflow: auto;
+  padding: 20px;
 }
 
-.Game img {
-  width: 70px;
-  height: 70px;
+.Board div {
   border-radius: 50%;
+  height: 70px;
+  margin: 1.2%;
+  width: 70px;
 }
+
+/* @media (max-width: 992px) {
+ 
+} */
